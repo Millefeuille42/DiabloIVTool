@@ -1,4 +1,4 @@
-module DiabloIVNotifier
+module diablo_iv_tool
 
 go 1.20
 
