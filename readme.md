@@ -5,6 +5,8 @@ A discord bot providing time trackers and (yet to come) tools for Diablo IV.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
+[Add this bot to your server](https://discord.com/api/oauth2/authorize?client_id=1120791758406701056&permissions=275146427456&scope=bot)
+
 ## Acknowledgements
 
 Diablo IV's world bosses spawns in 4 separate timespans:
