@@ -1,8 +1,8 @@
 FROM golang:1.20-alpine3.18
 
-ADD ./srcs /ft_auth_bot/
-WORKDIR /ft_auth_bot
+ADD ./srcs /diablo_iv_tool/
+WORKDIR /diablo_iv_tool
 
 RUN go install .
 
-CMD ft_auth_bot
+CMD diablo_iv_tool
