@@ -1,17 +1,17 @@
-package main
+package fetchers
 
 import (
+	"diablo_iv_tool/pkg/globals"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 )
 
 const helltidesEndpoint = "/helltides"
-const helltidesUrl = listApiURL + helltidesEndpoint
+const helltidesUrl = globals.ListApiURL + helltidesEndpoint
 
 type UpcomingHelltidesData struct {
 	HelltideEvents []time.Time `json:"helltideEvents"`
@@ -45,7 +45,7 @@ func marshalUpcomingHelltides(data []byte) (UpcomingHelltidesData, error) {
 	return upcoming, nil
 }
 
-func getUpcomingHelltidesData() (UpcomingHelltidesData, error) {
+func GetUpcomingHelltidesData() (UpcomingHelltidesData, error) {
 	data, err := getUpcomingHelltidesRaw()
 	if err != nil {
 		return UpcomingHelltidesData{}, err
@@ -59,8 +59,8 @@ func getUpcomingHelltidesData() (UpcomingHelltidesData, error) {
 	return upcoming, nil
 }
 
-func getUpcomingHelltides() (string, error) {
-	upcoming, err := getUpcomingHelltidesData()
+func GetUpcomingHelltides(loc *time.Location) (string, error) {
+	upcoming, err := GetUpcomingHelltidesData()
 	if err != nil {
 		return "", err
 	}
@@ -68,9 +68,9 @@ func getUpcomingHelltides() (string, error) {
 	Helltides := ""
 
 	for _, Helltide := range upcoming.HelltideEvents {
-		date := strings.Replace(Helltide.Local().Format(time.RFC850), " CEST", "", -1)
+		date := Helltide.In(loc).Format(time.RFC850)
 		Helltides = fmt.Sprintf("%s%s\n", Helltides, date)
 	}
 
-	return strings.Replace(Helltides, " CEST", "", -1), nil
+	return Helltides, nil
 }

@@ -1,6 +1,7 @@
-package main
+package fetchers
 
 import (
+	"diablo_iv_tool/pkg/globals"
 	"encoding/json"
 	"io"
 	"log"
@@ -8,7 +9,7 @@ import (
 )
 
 const helltideEndpoint = "/helltides"
-const helltideUrl = apiURL + helltideEndpoint
+const helltideUrl = globals.ApiURL + helltideEndpoint
 
 type UpcomingHelltideData struct {
 	Time int `json:"time"`
@@ -42,7 +43,7 @@ func marshalUpcomingHelltide(data []byte) (UpcomingHelltideData, error) {
 	return upcoming, nil
 }
 
-func getUpcomingHelltideData() (UpcomingHelltideData, error) {
+func GetUpcomingHelltideData() (UpcomingHelltideData, error) {
 	data, err := getUpcomingHelltideRaw()
 	if err != nil {
 		return UpcomingHelltideData{}, err
@@ -56,6 +57,6 @@ func getUpcomingHelltideData() (UpcomingHelltideData, error) {
 	return upcoming, nil
 }
 
-func getUpcomingHelltideFromStruct(upcoming UpcomingHelltideData) (int, int) {
+func GetUpcomingHelltideFromStruct(upcoming UpcomingHelltideData) (int, int) {
 	return upcoming.Time / 60, upcoming.Time % 60
 }

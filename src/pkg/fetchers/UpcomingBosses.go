@@ -1,17 +1,17 @@
-package main
+package fetchers
 
 import (
+	"diablo_iv_tool/pkg/globals"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 )
 
 const worldBossesEndpoint = "/worldBossSpawns"
-const worldBossesUrl = listApiURL + worldBossesEndpoint
+const worldBossesUrl = globals.ListApiURL + worldBossesEndpoint
 
 type UpcomingBossesData struct {
 	BossEvents []struct {
@@ -48,7 +48,7 @@ func marshalUpcomingBosses(data []byte) (UpcomingBossesData, error) {
 	return upcoming, nil
 }
 
-func getUpcomingBossesData() (UpcomingBossesData, error) {
+func GetUpcomingBossesData() (UpcomingBossesData, error) {
 	data, err := getUpcomingBossesRaw()
 	if err != nil {
 		return UpcomingBossesData{}, err
@@ -62,8 +62,8 @@ func getUpcomingBossesData() (UpcomingBossesData, error) {
 	return upcoming, nil
 }
 
-func getUpcomingBosses() (string, error) {
-	upcoming, err := getUpcomingBossesData()
+func GetUpcomingBosses(loc *time.Location) (string, error) {
+	upcoming, err := GetUpcomingBossesData()
 	if err != nil {
 		return "", err
 	}
@@ -71,9 +71,9 @@ func getUpcomingBosses() (string, error) {
 	bosses := ""
 
 	for _, boss := range upcoming.BossEvents {
-		date := strings.Replace(boss.Time.Local().Format(time.RFC850), " CEST", "", -1)
+		date := boss.Time.In(loc).Format(time.RFC850)
 		bosses = fmt.Sprintf("%s***%s***: %s\n", bosses, boss.Name, date)
 	}
 
-	return strings.Replace(bosses, " CEST", "", -1), nil
+	return bosses, nil
 }

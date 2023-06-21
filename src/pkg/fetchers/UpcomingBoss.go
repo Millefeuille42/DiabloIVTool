@@ -1,6 +1,7 @@
-package main
+package fetchers
 
 import (
+	"diablo_iv_tool/pkg/globals"
 	"encoding/json"
 	"io"
 	"log"
@@ -8,7 +9,7 @@ import (
 )
 
 const worldBossEndpoint = "/world-bosses"
-const worldBossUrl = apiURL + worldBossEndpoint
+const worldBossUrl = globals.ApiURL + worldBossEndpoint
 
 type UpcomingBossData struct {
 	Name string `json:"name"`
@@ -43,7 +44,7 @@ func marshalUpcomingBoss(data []byte) (UpcomingBossData, error) {
 	return upcoming, nil
 }
 
-func getUpcomingBossData() (UpcomingBossData, error) {
+func GetUpcomingBossData() (UpcomingBossData, error) {
 	data, err := getUpcomingBossRaw()
 	if err != nil {
 		return UpcomingBossData{}, err
@@ -57,6 +58,6 @@ func getUpcomingBossData() (UpcomingBossData, error) {
 	return upcoming, nil
 }
 
-func getUpcomingBossFromStruct(upcoming UpcomingBossData) (string, int, int) {
+func GetUpcomingBossFromStruct(upcoming UpcomingBossData) (string, int, int) {
 	return upcoming.Name, upcoming.Time / 60, upcoming.Time % 60
 }

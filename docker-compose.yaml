@@ -5,4 +5,9 @@ services:
     image: diablo_iv_tool
     restart: always
     environment:
-      - BOT_TOKEN=${BOT_TOKEN}
+      - DBIVTOOL_BOT_TOKEN=${DBIVTOOL_BOT_TOKEN}
+      - DBIVTOOL_DB_DRIVER=${DBIVTOOL_DB_DRIVER}
+      - DBIVTOOL_DB_DSN=${DBIVTOOL_DB_DSN}
+
+    volumes:
+      - ${DBIVTOOL_VOLUME_PATH_HOST}:${DBIVTOOL_VOLUME_PATH_CONTAINER}

@@ -1,6 +1,7 @@
-package main
+package discord
 
 import (
+	"diablo_iv_tool/pkg/globals"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"os"
@@ -14,7 +15,7 @@ func SetUpCloseHandler(session *discordgo.Session) {
 	go func() {
 		<-c
 		fmt.Println("\r- Ctrl+C pressed in Terminal")
-		deleteCommands(bot, "")
+		DeleteCommands(globals.Bot, "")
 		_ = session.Close()
 		os.Exit(0)
 	}()
