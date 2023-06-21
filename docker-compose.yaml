@@ -1,0 +1,8 @@
+version: "3"
+services:
+  diablo_iv_tool:
+    build: ./
+    image: diablo_iv_tool
+    restart: always
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
