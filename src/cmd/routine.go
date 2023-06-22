@@ -75,7 +75,7 @@ func getGuildRole(guildId, span string) string {
 	return ""
 }
 
-func sendAlert(upcomingBoss fetchers.UpcomingBossData, s *discordgo.Session) {
+func sendAlert(upcomingBoss fetchers.UpcomingBossData, s *discordgo.Session, emote string) {
 	span := getSpan(upcomingBoss)
 	if span == "" {
 		return
@@ -95,7 +95,7 @@ func sendAlert(upcomingBoss fetchers.UpcomingBossData, s *discordgo.Session) {
 			continue
 		}
 
-		message := ":warning:"
+		message := emote
 		selectedRoleId := getGuildRole(guild.GuildId, span)
 		if selectedRoleId != "" {
 			message += fmt.Sprintf(" <@&%s>", selectedRoleId)
@@ -110,6 +110,7 @@ func sendAlert(upcomingBoss fetchers.UpcomingBossData, s *discordgo.Session) {
 }
 
 func routine() {
+	shutAlertSoon := false
 	shutAlert := false
 	lastTime := 0
 
@@ -122,14 +123,20 @@ func routine() {
 
 		if lastTime < upcomingBoss.Time {
 			shutAlert = false
+			shutAlertSoon = false
 		}
 		lastTime = upcomingBoss.Time
 
 		setBotStatus(upcomingBoss)
 
 		if !shutAlert && upcomingBoss.Time <= 60 {
-			sendAlert(upcomingBoss, globals.Bot)
+			sendAlert(upcomingBoss, globals.Bot, ":warning:")
 			shutAlert = true
+		}
+
+		if !shutAlertSoon && upcomingBoss.Time <= 10 {
+			sendAlert(upcomingBoss, globals.Bot, ":sos:")
+			shutAlertSoon = true
 		}
 	}
 }
