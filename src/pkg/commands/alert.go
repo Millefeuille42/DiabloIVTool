@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
+	"strings"
 )
 
 func alertCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -19,8 +20,9 @@ func alertCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
+	optionSpan := strings.ToLower(optionMap["span"].StringValue())
 	roleName := ""
-	switch optionMap["span"].StringValue() {
+	switch optionSpan {
 	case "morning":
 		roleName = "Morning"
 		break

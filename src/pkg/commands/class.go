@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
+	"strings"
 )
 
 func classCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -19,8 +20,9 @@ func classCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
+	optionClass := strings.ToLower(optionMap["class"].StringValue())
 	roleName := ""
-	switch optionMap["class"].StringValue() {
+	switch optionClass {
 	case "barbarian":
 		roleName = "Barbarian"
 		break
