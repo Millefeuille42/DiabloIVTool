@@ -132,8 +132,9 @@ func SetRole(roleName, guildId, userId string, s *discordgo.Session) error {
 		}
 		err = s.GuildMemberRoleAdd(guildId, userId, role.RoleId)
 		if err != nil {
-			log.Println(err)
+			return err
 		}
+		break
 	}
 
 	return nil

@@ -15,7 +15,7 @@ func wtCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	if _, ok := optionMap["wt"]; !ok || optionMap["wt"].StringValue() == "" {
-		interactionSendError(s, i, "No world tier provided")
+		interactionSendError(s, i, "No world tier provided", discordgo.MessageFlagsEphemeral)
 		return
 	}
 
@@ -34,7 +34,7 @@ func wtCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		roleName = "World Tier 4"
 		break
 	default:
-		interactionSendError(s, i, "Invalid world tier provided")
+		interactionSendError(s, i, "Invalid world tier provided", discordgo.MessageFlagsEphemeral)
 	}
 
 	if i.Member == nil {
@@ -43,6 +43,8 @@ func wtCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 	err := discord.SetRole(roleName, i.GuildID, i.Member.User.ID, s)
 	if err != nil {
+		log.Println(err)
+		interactionSendError(s, i, "Error assigning role", 0)
 		return
 	}
 

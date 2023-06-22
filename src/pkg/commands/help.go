@@ -55,14 +55,14 @@ func helpCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	_, err := guild.GetGuildByGuildId(i.GuildID)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error generating help")
+		interactionSendError(s, i, "Error generating help", 0)
 		return
 	}
 
 	message, err := generateSpansString(guild)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error generating help (wrong timezone)")
+		interactionSendError(s, i, "Error generating help (wrong timezone)", 0)
 		return
 	}
 	message += "\n" + generateWtsString() + "\n" + generateClassesString()

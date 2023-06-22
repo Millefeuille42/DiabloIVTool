@@ -14,21 +14,21 @@ func upcomingHelltidesCommandHandler(s *discordgo.Session, i *discordgo.Interact
 	_, err := guild.GetGuildByGuildId(i.GuildID)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error fetching upcoming helltides")
+		interactionSendError(s, i, "Error fetching upcoming helltides", 0)
 		return
 	}
 
 	loc, err := time.LoadLocation(guild.Location)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error fetching upcoming helltides (invalid location)")
+		interactionSendError(s, i, "Error fetching upcoming helltides (invalid location)", 0)
 		return
 	}
 
 	helltides, err := fetchers.GetUpcomingHelltides(loc)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error fetching upcoming helltides")
+		interactionSendError(s, i, "Error fetching upcoming helltides", 0)
 		return
 	}
 

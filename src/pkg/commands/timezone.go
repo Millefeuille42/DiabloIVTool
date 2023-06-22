@@ -16,14 +16,14 @@ func timezoneCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate
 	}
 
 	if _, ok := optionMap["timezone"]; !ok || optionMap["timezone"].StringValue() == "" {
-		interactionSendError(s, i, "No timezone provided")
+		interactionSendError(s, i, "No timezone provided", discordgo.MessageFlagsEphemeral)
 		return
 	}
 
 	_, err := time.LoadLocation(optionMap["timezone"].StringValue())
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Invalid timezone")
+		interactionSendError(s, i, "Invalid timezone", discordgo.MessageFlagsEphemeral)
 		return
 	}
 
@@ -31,7 +31,7 @@ func timezoneCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate
 	_, err = guild.GetGuildByGuildId(i.GuildID)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error setting location")
+		interactionSendError(s, i, "Error setting location", 0)
 		return
 	}
 
@@ -39,7 +39,7 @@ func timezoneCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate
 	err = guild.UpdateGuild()
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error setting location")
+		interactionSendError(s, i, "Error setting location", 0)
 		return
 	}
 

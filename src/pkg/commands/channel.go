@@ -11,7 +11,7 @@ func channelCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 	_, err := guild.GetGuildByGuildId(i.GuildID)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error registering channel")
+		interactionSendError(s, i, "Error registering channel", 0)
 		return
 	}
 
@@ -19,7 +19,7 @@ func channelCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 	err = guild.UpdateGuild()
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error registering channel")
+		interactionSendError(s, i, "Error registering channel", 0)
 		return
 	}
 

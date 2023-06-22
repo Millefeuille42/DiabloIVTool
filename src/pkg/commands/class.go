@@ -15,7 +15,7 @@ func classCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	if _, ok := optionMap["class"]; !ok || optionMap["class"].StringValue() == "" {
-		interactionSendError(s, i, "No class provided")
+		interactionSendError(s, i, "No class provided", discordgo.MessageFlagsEphemeral)
 		return
 	}
 
@@ -37,7 +37,7 @@ func classCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		roleName = "Necromancer"
 		break
 	default:
-		interactionSendError(s, i, "Invalid class provided")
+		interactionSendError(s, i, "Invalid class provided", discordgo.MessageFlagsEphemeral)
 	}
 
 	if i.Member == nil {
@@ -46,6 +46,8 @@ func classCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 	err := discord.SetRole(roleName, i.GuildID, i.Member.User.ID, s)
 	if err != nil {
+		log.Println(err)
+		interactionSendError(s, i, "Error assigning role", 0)
 		return
 	}
 

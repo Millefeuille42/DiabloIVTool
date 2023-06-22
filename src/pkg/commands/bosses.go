@@ -13,21 +13,21 @@ func upcomingBossesCommandHandler(s *discordgo.Session, i *discordgo.Interaction
 	_, err := guild.GetGuildByGuildId(i.GuildID)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error fetching upcoming world bosses")
+		interactionSendError(s, i, "Error fetching upcoming world bosses", 0)
 		return
 	}
 
 	loc, err := time.LoadLocation(guild.Location)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error fetching upcoming world bosses (invalid location)")
+		interactionSendError(s, i, "Error fetching upcoming world bosses (invalid location)", 0)
 		return
 	}
 
 	bosses, err := fetchers.GetUpcomingBosses(loc)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error fetching upcoming world bosses")
+		interactionSendError(s, i, "Error fetching upcoming world bosses", 0)
 		return
 	}
 

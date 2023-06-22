@@ -15,7 +15,7 @@ func alertCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	if _, ok := optionMap["span"]; !ok || optionMap["span"].StringValue() == "" {
-		interactionSendError(s, i, "No timespan provided")
+		interactionSendError(s, i, "No timespan provided", discordgo.MessageFlagsEphemeral)
 		return
 	}
 
@@ -34,7 +34,7 @@ func alertCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		roleName = "Evening"
 		break
 	default:
-		interactionSendError(s, i, "Invalid timespan provided")
+		interactionSendError(s, i, "Invalid timespan provided", discordgo.MessageFlagsEphemeral)
 	}
 
 	if i.Member == nil {
@@ -43,6 +43,8 @@ func alertCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 	err := discord.SetRole(roleName, i.GuildID, i.Member.User.ID, s)
 	if err != nil {
+		log.Println(err)
+		interactionSendError(s, i, "Error assigning role", 0)
 		return
 	}
 
