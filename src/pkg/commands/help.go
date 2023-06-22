@@ -35,10 +35,10 @@ func generateSpansString(guild models.GuildModel) (string, error) {
 
 func generateWtsString() string {
 	return "World Tiers:\n" +
-		"1. adventurer\n" +
-		"2. veteran\n" +
-		"3. nightmare\n" +
-		"4. torment\n"
+		"adventurer: 1\n" +
+		"veteran:    2\n" +
+		"nightmare:  3\n" +
+		"torment:    4\n"
 }
 
 func generateClassesString() string {
