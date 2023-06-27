@@ -32,7 +32,7 @@ func upcomingHelltidesCommandHandler(s *discordgo.Session, i *discordgo.Interact
 		return
 	}
 
-	message := ":warning: **This info might might be inaccurate** :warning:\n\n"
+	message := ""
 
 	for _, helltide := range helltides.HelltideEvents {
 		date := helltide.In(loc).Format(time.RFC850)
