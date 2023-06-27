@@ -1,13 +1,27 @@
 version: "3"
 services:
-  diablo_iv_tool:
-    build: ./
-    image: diablo_iv_tool
+  bot:
+    build: ./bot.Dockerfile
+    image: diablo_iv_tool_bot
     restart: always
     environment:
       - DBIVTOOL_BOT_TOKEN=${DBIVTOOL_BOT_TOKEN}
       - DBIVTOOL_DB_DRIVER=${DBIVTOOL_DB_DRIVER}
       - DBIVTOOL_DB_DSN=${DBIVTOOL_DB_DSN}
-
+      - DBIVTOOL_REDIS_HOST=${DBIVTOOL_REDIS_HOST}
+      - DBIVTOOL_REDIS_PORT=${DBIVTOOL_REDIS_PORT}
+      - DBIVTOOL_REDIS_PASSWORD=${DBIVTOOL_REDIS_PASSWORD}
+      - DBIVTOOL_REDIS_DB=${DBIVTOOL_REDIS_DB}
     volumes:
       - ${DBIVTOOL_VOLUME_PATH_HOST}:${DBIVTOOL_VOLUME_PATH_CONTAINER}
+  fetcher:
+    build: ./fetcher.Dockerfile
+    image: diablo_iv_tool_fetcher
+    restart: always
+    environment:
+      - DBIVTOOL_REDIS_HOST=${DBIVTOOL_REDIS_HOST}
+      - DBIVTOOL_REDIS_PORT=${DBIVTOOL_REDIS_PORT}
+      - DBIVTOOL_REDIS_PASSWORD=${DBIVTOOL_REDIS_PASSWORD}
+      - DBIVTOOL_REDIS_DB=${DBIVTOOL_REDIS_DB}
+
+
