@@ -38,10 +38,10 @@ func (client *WsClient) Listener() {
 	for {
 		_, message, err := client.conn.ReadMessage()
 		if err != nil {
-			log.Println("read:", err)
+			log.Println("wsFetcher: read:", err)
 			return
 		}
-		log.Printf("recv: %s", message)
+		log.Printf("wsFetcher: recv: %s", message)
 
 		messageParsed, err := parseMessage(message)
 		if err != nil {
@@ -50,9 +50,8 @@ func (client *WsClient) Listener() {
 		}
 
 		if messageParsed.Type == "c" {
-			log.Println("Connected")
+			log.Println("wsFetcher: connected")
 			client.Connected <- struct{}{}
-			log.Println("Sent Connected")
 			continue
 		}
 
@@ -71,35 +70,33 @@ func (client *WsClient) Sender() {
 	for alive := true; alive; {
 		select {
 		case <-client.done:
-			client.sendExited()
 			alive = false
 		case m := <-client.Send:
-			log.Printf("Send Message %s", m)
+			log.Printf("wsFetcher: send Message %s", m)
 			err := client.conn.WriteMessage(websocket.TextMessage, []byte(m))
 			if err != nil {
-				log.Println("write:", err)
+				log.Println("wsFetcher: write:", err)
 				continue
 			}
 		case <-ticker.C:
 			err := client.conn.WriteMessage(websocket.PingMessage, []byte("0"))
 			if err != nil {
-				log.Println("write ping:", err)
+				log.Println("wsFetcher: write ping:", err)
 				continue
 			}
 		case <-client.Interrupt:
-			log.Println("Interrupt")
+			log.Println("wsFetcher: interrupt")
 			err := client.conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 			if err != nil {
-				log.Println("write close:", err)
-				client.sendExited()
+				log.Println("wsFetcher: write close:", err)
 				alive = false
 			}
 			select {
 			case <-client.done:
 			case <-time.After(time.Second):
 			}
-			client.sendExited()
 			alive = false
 		}
 	}
+	client.sendExited()
 }

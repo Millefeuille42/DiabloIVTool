@@ -6,20 +6,16 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"os"
-	"os/signal"
 )
 
 func (client *WsClient) Connect() (*http.Response, error) {
-	signal.Notify(client.Interrupt, os.Interrupt)
-
 	u := url.URL{
 		Scheme:   "wss",
 		Host:     globals.WsApiHost,
 		Path:     globals.WsApiPath,
 		RawQuery: globals.WsApiQuery,
 	}
-	log.Printf("connecting to %s", u.String())
+	log.Printf("wsFetcher: connecting to %s", u.String())
 
 	conn, resp, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	client.conn = conn

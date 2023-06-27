@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fetcher/pkg/redisCache"
 	"github.com/redis/go-redis/v9"
+	"time"
 )
 
 func parseHelltideData(data []byte) (redisCache.HelltideData, error) {
@@ -45,21 +46,17 @@ func (client *WsClient) parseMessageData(message socketData, redisClient *redis.
 
 	switch message.Data.Body.Title {
 	case "helltide":
-		helltide, err := parseHelltideData(dataJson)
+		_, err = parseHelltideData(dataJson)
 		if err != nil {
 			return err
 		}
-		client.helltideData = helltide
-		client.resetTimers <- struct{}{}
 	case "world_boss":
-		worldBoss, err := parseWorldBossData(dataJson)
+		_, err = parseWorldBossData(dataJson)
 		if err != nil {
 			return err
 		}
-		client.worldBossData = worldBoss
-		client.resetTimers <- struct{}{}
 	case "world_boss_zone":
-		_, err := parseWorldBossZoneData(dataJson)
+		_, err = parseWorldBossZoneData(dataJson)
 		if err != nil {
 			return err
 		}
@@ -68,7 +65,7 @@ func (client *WsClient) parseMessageData(message socketData, redisClient *redis.
 	}
 
 	ctx := context.Background()
-	err = redisClient.Set(ctx, message.Data.Body.Title, dataJson, 0).Err()
+	err = redisClient.Set(ctx, message.Data.Body.Title, dataJson, time.Minute*30).Err()
 	if err != nil {
 		return err
 	}

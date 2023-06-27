@@ -1,35 +1,24 @@
 package wsFetcher
 
 import (
-	"fetcher/pkg/redisCache"
 	"github.com/gorilla/websocket"
-	"os"
 )
 
 type WsClient struct {
-	conn          *websocket.Conn
-	worldBossData redisCache.WorldBossData
-	helltideData  redisCache.HelltideData
-	isInitialized bool
-	resetTimers   chan struct{}
-	done          chan struct{}
-	Send          chan string
-	Connected     chan struct{}
-	Exited        chan<- struct{}
-	Interrupt     chan os.Signal
+	done      chan struct{}
+	conn      *websocket.Conn
+	Send      chan string
+	Connected chan struct{}
+	Exited    chan struct{}
+	Interrupt chan struct{}
 }
 
 func New() *WsClient {
 	return &WsClient{
-		Send:          make(chan string),
-		Interrupt:     make(chan os.Signal, 1),
-		done:          make(chan struct{}),
-		Connected:     make(chan struct{}),
-		resetTimers:   make(chan struct{}),
-		worldBossData: redisCache.WorldBossData{},
-		helltideData:  redisCache.HelltideData{},
-		isInitialized: false,
+		done:      make(chan struct{}),
+		Send:      make(chan string),
+		Connected: make(chan struct{}),
+		Exited:    make(chan struct{}),
+		Interrupt: make(chan struct{}),
 	}
 }
-
-var Client *WsClient

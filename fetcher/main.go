@@ -7,17 +7,21 @@ import (
 	"fetcher/pkg/wsFetcher"
 	"github.com/redis/go-redis/v9"
 	"log"
+	"os"
+	"os/signal"
 	"time"
 )
 
-func askForData() {
-	wsFetcher.AskForData(wsFetcher.Client.Send)
+func askForData(ws *wsFetcher.WsClient) {
+	wsFetcher.AskForData(ws.Send)
 	fetchers.AskForData()
 }
 
 func main() {
 	globals.SetGlobals()
-	terminated := make(chan struct{}, 1)
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
 
 	redisCache.Client = redisCache.New(&redis.Options{
 		Addr:     globals.RedisHost + ":" + globals.RedisPort,
@@ -25,31 +29,34 @@ func main() {
 		DB:       globals.RedisDB,
 	})
 
-	wsFetcher.Client = wsFetcher.New()
-	resp, err := wsFetcher.Client.Connect()
+	ws := wsFetcher.New()
+	resp, err := ws.Connect()
 	if err != nil {
-		log.Printf("handshake failed with status %d", resp.StatusCode)
-		log.Fatal("dial:", err)
+		log.Printf("main: handshake failed with status %d", resp.StatusCode)
+		log.Fatal("main: dial:", err)
 	}
-	wsFetcher.Client.Exited = terminated
 
-	defer wsFetcher.Client.Close()
-	go wsFetcher.Client.Listener()
-	go wsFetcher.Client.Sender()
+	defer ws.Close()
+	go ws.Listener()
+	go ws.Sender()
 
-	updateTicker := time.NewTicker(time.Hour * 1)
+	updateTicker := time.NewTicker(5 * time.Minute)
 	defer updateTicker.Stop()
 
-	for {
+	for alive := true; alive; {
 		select {
+		case <-interrupt:
+			log.Println("main: interrupt")
+			alive = false
+		case <-ws.Exited:
+			log.Println("main: wsFetcher exited")
+			alive = false
+		case <-ws.Connected:
+			log.Println("main: connected, asking for data")
+			askForData(ws)
 		case <-updateTicker.C:
-			log.Println("updating data")
-		case <-terminated:
-			log.Println("interrupt")
-			return
-		case <-wsFetcher.Client.Connected:
-			log.Println("connected, asking for data")
-			askForData()
+			askForData(ws)
 		}
 	}
+	ws.Interrupt <- struct{}{}
 }
