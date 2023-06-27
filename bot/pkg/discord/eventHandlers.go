@@ -13,10 +13,6 @@ func BotConnected(s *discordgo.Session, r *discordgo.Ready) {
 }
 
 func GuildJoined(s *discordgo.Session, g *discordgo.GuildCreate) {
-	if g.ID == "158157898264870912" {
-		return
-	}
-
 	log.Printf("Joined guild: %v", g.Name)
 
 	guild := models.GuildModel{
