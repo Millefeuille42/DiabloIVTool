@@ -19,9 +19,11 @@ func upcomingBossCommandHandler(s *discordgo.Session, i *discordgo.InteractionCr
 
 	zone, err := redisCache.GetWorldBossZone()
 	if err != nil {
-		log.Println(err)
-		interactionSendError(s, i, "Error fetching upcoming world boss", 0)
-		return
+		if err.Error() != "redis: nil" {
+			log.Println(err)
+			interactionSendError(s, i, "Error fetching upcoming world boss", 0)
+			return
+		}
 	}
 
 	guild := models.GuildModel{}
