@@ -115,6 +115,35 @@ func sendAlert(worldBoss redisCache.WorldBossData, s *discordgo.Session, emote s
 	}
 }
 
+func routineEvents(worldBoss redisCache.WorldBossData, zone string) {
+	setBotStatus(worldBoss, zone)
+
+	untilBoss := time.Until(worldBoss.StartTime)
+
+	hourBefore := time.NewTimer(untilBoss - time.Hour)
+	defer hourBefore.Stop()
+	tenMinutesBefore := time.NewTimer(untilBoss - time.Minute*10)
+	defer tenMinutesBefore.Stop()
+	refreshTimer := time.NewTimer(untilBoss + time.Minute*10)
+	defer refreshTimer.Stop()
+
+	updateBotStatusTicker := time.NewTicker(time.Minute * 1)
+	defer updateBotStatusTicker.Stop()
+
+	for refresh := false; !refresh; {
+		select {
+		case <-updateBotStatusTicker.C:
+			setBotStatus(worldBoss, zone)
+		case <-hourBefore.C:
+			sendAlert(worldBoss, globals.Bot, ":warning:", zone)
+		case <-tenMinutesBefore.C:
+			sendAlert(worldBoss, globals.Bot, ":sos:", zone)
+		case <-refreshTimer.C:
+			refresh = true
+		}
+	}
+}
+
 func routine() {
 	for {
 		worldBoss, err := redisCache.GetWorldBoss()
@@ -124,8 +153,9 @@ func routine() {
 		}
 		zone, err := redisCache.GetWorldBossZone()
 		if err != nil {
-			log.Println(err)
-			continue
+			if err.Error() != "redis: nil" {
+				log.Println(err)
+			}
 		}
 
 		if zone == "no-boss" {
@@ -134,30 +164,6 @@ func routine() {
 			zone = fmt.Sprintf(" at %s", zone)
 		}
 
-		setBotStatus(worldBoss, zone)
-
-		untilBoss := time.Until(worldBoss.StartTime)
-		refreshTimer := time.NewTimer(untilBoss + time.Minute*1)
-		hourBefore := time.NewTimer(untilBoss - time.Hour)
-		tenMinutesBefore := time.NewTimer(untilBoss - time.Minute*10)
-		ticker := time.NewTicker(time.Minute * 2)
-
-		for refresh := false; !refresh; {
-			select {
-			case <-ticker.C:
-				setBotStatus(worldBoss, zone)
-			case <-hourBefore.C:
-				sendAlert(worldBoss, globals.Bot, ":warning:", zone)
-			case <-tenMinutesBefore.C:
-				sendAlert(worldBoss, globals.Bot, ":sos:", zone)
-			case <-refreshTimer.C:
-				refresh = true
-			}
-		}
-
-		hourBefore.Stop()
-		tenMinutesBefore.Stop()
-		refreshTimer.Stop()
-		ticker.Stop()
+		routineEvents(worldBoss, zone)
 	}
 }
