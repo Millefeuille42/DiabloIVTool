@@ -1,7 +1,15 @@
 version: "3"
 services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - ${DBIVTOOL_REDIS_PORT:-6379}:6379
   bot:
-    build: ./bot.Dockerfile
+    depends_on:
+     - redis
+    build:
+      context: ./
+      dockerfile: bot.Dockerfile
     image: diablo_iv_tool_bot
     restart: always
     environment:
@@ -15,7 +23,11 @@ services:
     volumes:
       - ${DBIVTOOL_VOLUME_PATH_HOST}:${DBIVTOOL_VOLUME_PATH_CONTAINER}
   fetcher:
-    build: ./fetcher.Dockerfile
+    depends_on:
+      - redis
+    build:
+        context: ./
+        dockerfile: fetcher.Dockerfile
     image: diablo_iv_tool_fetcher
     restart: always
     environment:
