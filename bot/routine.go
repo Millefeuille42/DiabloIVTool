@@ -148,7 +148,9 @@ func routine() {
 	for {
 		worldBoss, err := redisCache.GetWorldBoss()
 		if err != nil {
-			log.Println(err)
+			if err.Error() != "redis: nil" {
+				log.Println(err)
+			}
 			continue
 		}
 		zone, err := redisCache.GetWorldBossZone()
@@ -158,7 +160,7 @@ func routine() {
 			}
 		}
 
-		if zone == "no-boss" {
+		if zone == "no-boss" || zone == "" {
 			zone = ""
 		} else {
 			zone = fmt.Sprintf(" at %s", zone)
