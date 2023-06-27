@@ -81,6 +81,14 @@ To run this bot locally, you will need to add the following environment variable
 
 `DBIVTOOL_DB_DSN`: The database DSN (`file:./db.sqlite3?_foreign_keys=ON`)
 
+`DBIVTOOL_REDIS_HOST`: The redis host (`localhost`)
+
+`DBIVTOOL_REDIS_PORT`: The redis port (`6379`)
+
+`DBIVTOOL_REDIS_PASSWORD`: The redis password 
+
+`DBIVTOOL_REDIS_DB`: The redis database number (`0`)
+
 `DBIVTOOL_VOLUME_PATH_HOST`: The host path to the persistent folder
 
 `DBIVTOOL_VOLUME_PATH_CONTAINER`: The container path to the persistent folder
