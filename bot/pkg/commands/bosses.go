@@ -32,7 +32,7 @@ func upcomingBossesCommandHandler(s *discordgo.Session, i *discordgo.Interaction
 		return
 	}
 
-	message := ":warning: **This info might might be inaccurate** :warning:\n\n"
+	message := ""
 	for _, boss := range bosses.BossEvents {
 		date := boss.Time.In(loc).Format(time.RFC850)
 		message = fmt.Sprintf("%s***%s***: %s\n", message, boss.Name, date)

@@ -35,13 +35,12 @@ func upcomingHelltideCommandHandler(s *discordgo.Session, i *discordgo.Interacti
 	untilHelltide := time.Until(helltide.StartTime)
 	date := helltide.StartTime.In(loc).Format(time.TimeOnly)
 
-	hours := int(untilHelltide.Hours())
-	minutes := int(untilHelltide.Minutes()) - (hours * 60)
+	minutes := int(untilHelltide.Minutes())
 
 	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("Next helltide in %dh%02dm (%s)", hours, minutes, date),
+			Content: fmt.Sprintf("Next helltide in %02dm (%s)", minutes, date),
 		},
 	})
 	if err != nil {
