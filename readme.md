@@ -101,5 +101,7 @@ If you have any feedback, please create an issue on this repository.
 
 By [@millefeuille](https://www.github.com/Millefeuille42)
 
-Using https://d4builds.gg/ and https://worldstone.io/
-
+This bot works on the following APIs:  
+- https://d4builds.gg/ 
+- https://worldstone.io/
+- https://helltides.com/
