@@ -50,7 +50,7 @@ func main() {
 			alive = false
 		case <-ws.Exited:
 			log.Println("main: wsFetcher exited")
-			alive = false
+			return
 		case <-ws.Connected:
 			log.Println("main: connected, asking for data")
 			askForData(ws)
@@ -58,5 +58,4 @@ func main() {
 			askForData(ws)
 		}
 	}
-	ws.Interrupt <- struct{}{}
 }
