@@ -49,15 +49,23 @@ func generateRoleParams(name string, color int) discordgo.RoleParams {
 	}
 }
 
-func createRole(name string, color int, guildId string, s *discordgo.Session) (*discordgo.Role, error) {
+func createRole(name string, color int, guildId string, s *discordgo.Session, guildRoles []*discordgo.Role) (*discordgo.Role, error) {
 	params := generateRoleParams(name, color)
+	if len(guildRoles) > 0 {
+		for _, role := range guildRoles {
+			if role.Name == name {
+				log.Printf("Role: %v already exists for guild: %v", role.Name, guildId)
+				return role, nil
+			}
+		}
+	}
 	time.Sleep(300 * time.Millisecond)
 	return s.GuildRoleCreate(guildId, &params)
 }
 
-func createRolesFromList(roles []string, color int, guildId string, s *discordgo.Session) error {
+func createRolesFromList(roles []string, color int, guildId string, s *discordgo.Session, guildRoles []*discordgo.Role) error {
 	for _, role := range roles {
-		createdRole, err := createRole(role, color, guildId, s)
+		createdRole, err := createRole(role, color, guildId, s, guildRoles)
 		if err != nil {
 			return err
 		}
@@ -85,17 +93,22 @@ func CreateRoles(s *discordgo.Session, guildId string) error {
 		return err
 	}
 
-	err = createRolesFromList(worldTierRoles, worldTierColor, guildId, s)
+	guildRoles, err := s.GuildRoles(guildId)
 	if err != nil {
 		return err
 	}
 
-	err = createRolesFromList(classRoles, classColor, guildId, s)
+	err = createRolesFromList(worldTierRoles, worldTierColor, guildId, s, guildRoles)
 	if err != nil {
 		return err
 	}
 
-	err = createRolesFromList(alertRoles, alertColor, guildId, s)
+	err = createRolesFromList(classRoles, classColor, guildId, s, guildRoles)
+	if err != nil {
+		return err
+	}
+
+	err = createRolesFromList(alertRoles, alertColor, guildId, s, guildRoles)
 	if err != nil {
 		return err
 	}
