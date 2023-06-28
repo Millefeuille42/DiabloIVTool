@@ -82,5 +82,5 @@ func GetWorldBossZone() (string, error) {
 		return "", err
 	}
 
-	return "", nil
+	return worldBossZone, nil
 }
