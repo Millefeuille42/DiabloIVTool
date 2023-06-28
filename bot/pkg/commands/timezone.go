@@ -9,11 +9,7 @@ import (
 )
 
 func timezoneCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	options := i.ApplicationCommandData().Options
-	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
-	for _, opt := range options {
-		optionMap[opt.Name] = opt
-	}
+	optionMap := parseOptions(i.ApplicationCommandData().Options)
 
 	if _, ok := optionMap["timezone"]; !ok || optionMap["timezone"].StringValue() == "" {
 		interactionSendError(s, i, "No timezone provided", discordgo.MessageFlagsEphemeral)

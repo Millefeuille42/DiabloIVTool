@@ -6,11 +6,7 @@ import (
 )
 
 func classCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	options := i.ApplicationCommandData().Options
-	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
-	for _, opt := range options {
-		optionMap[opt.Name] = opt
-	}
+	optionMap := parseOptions(i.ApplicationCommandData().Options)
 
 	if _, ok := optionMap["class"]; !ok {
 		interactionSendError(s, i, "No class provided", discordgo.MessageFlagsEphemeral)

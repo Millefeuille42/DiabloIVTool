@@ -6,11 +6,7 @@ import (
 )
 
 func alertCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	options := i.ApplicationCommandData().Options
-	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
-	for _, opt := range options {
-		optionMap[opt.Name] = opt
-	}
+	optionMap := parseOptions(i.ApplicationCommandData().Options)
 
 	if _, ok := optionMap["span"]; !ok {
 		interactionSendError(s, i, "No timespan provided", discordgo.MessageFlagsEphemeral)

@@ -5,11 +5,7 @@ import (
 )
 
 func wtCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	options := i.ApplicationCommandData().Options
-	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
-	for _, opt := range options {
-		optionMap[opt.Name] = opt
-	}
+	optionMap := parseOptions(i.ApplicationCommandData().Options)
 
 	if _, ok := optionMap["wt"]; !ok {
 		interactionSendError(s, i, "No world tier provided", discordgo.MessageFlagsEphemeral)

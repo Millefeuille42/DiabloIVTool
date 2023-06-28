@@ -9,11 +9,7 @@ import (
 )
 
 func channelCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	options := i.ApplicationCommandData().Options
-	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
-	for _, opt := range options {
-		optionMap[opt.Name] = opt
-	}
+	optionMap := parseOptions(i.ApplicationCommandData().Options)
 
 	if _, ok := optionMap["type"]; !ok {
 		interactionSendError(s, i, "No alert type provided", discordgo.MessageFlagsEphemeral)

@@ -7,6 +7,15 @@ import (
 	"log"
 )
 
+func parseOptions(options []*discordgo.ApplicationCommandInteractionDataOption) map[string]*discordgo.ApplicationCommandInteractionDataOption {
+	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
+	for _, opt := range options {
+		optionMap[opt.Name] = opt
+	}
+
+	return optionMap
+}
+
 func handleRoleRemove(s *discordgo.Session, i *discordgo.InteractionCreate, roleName string) {
 	err := discord.UnsetRole(roleName, i.GuildID, i.Member.User.ID, s)
 	if err != nil {
