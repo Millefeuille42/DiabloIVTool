@@ -1,5 +1,6 @@
 package globals
 
+const BuildApiUrl = "https://d4builds.gg/page-data/database"
 const ListApiURL = "https://app.worldstone.io:2083/d4"
 
 const WsApiHost = "s-usc1b-nss-2106.firebaseio.com"

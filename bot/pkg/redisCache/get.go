@@ -84,3 +84,19 @@ func GetWorldBossZone() (string, error) {
 
 	return worldBossZone, nil
 }
+
+func GetUniqueItems() (UniqueItemsData, error) {
+	ctx := context.Background()
+	data, err := Client.Get(ctx, "unique_items").Bytes()
+	if err != nil {
+		return UniqueItemsData{}, err
+	}
+
+	uniqueItems := UniqueItemsData{}
+	err = json.Unmarshal(data, &uniqueItems)
+	if err != nil {
+		return UniqueItemsData{}, err
+	}
+
+	return uniqueItems, nil
+}

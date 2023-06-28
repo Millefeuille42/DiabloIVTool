@@ -22,4 +22,11 @@ func AskForData() {
 	} else {
 		redisCache.Client.Set(ctx, "helltides", UpcomingHelltides, 0)
 	}
+
+	uniqueItems, err := getUniqueItemsRaw()
+	if err != nil {
+		log.Printf("Error getting unique items data: %v", err)
+	} else {
+		redisCache.Client.Set(ctx, "unique_items", uniqueItems, 0)
+	}
 }

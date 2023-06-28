@@ -2,6 +2,21 @@ package redisCache
 
 import "time"
 
+type UniqueItemData struct {
+	Name           string   `json:"name"`
+	Class          string   `json:"class,omitempty"`
+	Type           string   `json:"type"`
+	SecondaryStats []string `json:"secondary_stats,omitempty"`
+	TerciaryStats  []string `json:"terciary_stats,omitempty"`
+	Effect         string   `json:"effect"`
+	Flavor         string   `json:"flavor"`
+	Filters        []string `json:"filters,omitempty"`
+}
+
+type UniqueItemsData struct {
+	Items []UniqueItemData `json:"items"`
+}
+
 type UpcomingHelltidesData struct {
 	HelltideEvents []time.Time `json:"helltideEvents"`
 }

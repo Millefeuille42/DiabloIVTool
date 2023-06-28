@@ -153,6 +153,22 @@ func SetRole(roleName, guildId, userId string, s *discordgo.Session) error {
 	return nil
 }
 
+func UnsetAllRoles(guildId, userId string, s *discordgo.Session) error {
+	roles, err := models.GetRolesByGuildId(guildId)
+	if err != nil {
+		return err
+	}
+
+	for _, role := range roles {
+		err = s.GuildMemberRoleRemove(guildId, userId, role.RoleId)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func UnsetRole(roleName, guildId, userId string, s *discordgo.Session) error {
 	roles, err := models.GetRolesByGuildId(guildId)
 	if err != nil {

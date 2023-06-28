@@ -33,16 +33,16 @@ func parseOptions(options []*discordgo.ApplicationCommandInteractionDataOption) 
 	return optionMap
 }
 
-func handleRoleRemove(s *discordgo.Session, i *discordgo.InteractionCreate, roleName string) {
-	err := discord.UnsetRole(roleName, i.GuildID, i.Member.User.ID, s)
+func handleRoleRemove(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	err := discord.UnsetAllRoles(i.GuildID, i.Member.User.ID, s)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error de-assigning role", 0)
+		interactionSendError(s, i, "Error de-assigning roles", 0)
 		return
 	}
 
 	interactionSendResponse(s, i,
-		fmt.Sprintf("You have been de-assigned the %s role", roleName),
+		fmt.Sprintf("You have been de-assigned your roles"),
 		discordgo.MessageFlagsEphemeral,
 	)
 }
@@ -54,9 +54,28 @@ func handleRoleAdd(s *discordgo.Session, i *discordgo.InteractionCreate, roleNam
 		interactionSendError(s, i, "Error assigning role", 0)
 		return
 	}
+}
 
-	interactionSendResponse(s, i,
-		fmt.Sprintf("You have been assigned the %s role", roleName),
-		discordgo.MessageFlagsEphemeral,
-	)
+func handleAutocomplete(s *discordgo.Session, i *discordgo.InteractionCreate, val string, choices []*discordgo.ApplicationCommandOptionChoice) {
+	if i.Type != discordgo.InteractionApplicationCommandAutocomplete {
+		return
+	}
+
+	choices = filterChoices(choices, val)
+	choices = rankChoices(choices, val)
+	maxResults := 7
+	if len(choices) < maxResults {
+		maxResults = len(choices)
+	}
+	choices = choices[:maxResults]
+
+	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionApplicationCommandAutocompleteResult,
+		Data: &discordgo.InteractionResponseData{
+			Choices: choices,
+		},
+	})
+	if err != nil {
+		log.Println(err)
+	}
 }
