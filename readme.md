@@ -115,7 +115,7 @@ If you have any feedback, please create an issue on this repository.
 
 By [@millefeuille](https://www.github.com/Millefeuille42)
 
-This bot works using the following APIs:  
+This bot works using the APIs of the following websites:  
 - https://d4builds.gg/ 
 - https://worldstone.io/
 - https://helltides.com/
