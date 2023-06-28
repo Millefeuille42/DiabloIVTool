@@ -120,9 +120,9 @@ func routineEvents(worldBoss redisCache.WorldBossData, zone string) {
 
 	untilBoss := time.Until(worldBoss.StartTime)
 
-	hourBefore := time.NewTimer(untilBoss - time.Hour)
+	hourBefore := time.NewTimer(untilBoss - time.Hour - time.Second*1)
 	defer hourBefore.Stop()
-	tenMinutesBefore := time.NewTimer(untilBoss - time.Minute*10)
+	tenMinutesBefore := time.NewTimer(untilBoss - time.Minute*10 - time.Second*1)
 	defer tenMinutesBefore.Stop()
 	refreshTimer := time.NewTimer(untilBoss + time.Minute*10)
 	defer refreshTimer.Stop()
