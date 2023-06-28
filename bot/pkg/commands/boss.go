@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func upcomingBossesHandler(s *discordgo.Session, i *discordgo.InteractionCreate, guild models.GuildModel, loc *time.Location) {
+func upcomingBossesHandler(s *discordgo.Session, i *discordgo.InteractionCreate, loc *time.Location) {
 	bosses, err := redisCache.GetUpcomingBosses()
 	if err != nil {
 		log.Println(err)
@@ -59,7 +59,7 @@ func upcomingBossCommandHandler(s *discordgo.Session, i *discordgo.InteractionCr
 
 	if _, ok := optionMap["list"]; ok {
 		if optionMap["list"].BoolValue() {
-			upcomingBossesHandler(s, i, guild, loc)
+			upcomingBossesHandler(s, i, loc)
 			return
 		}
 	}

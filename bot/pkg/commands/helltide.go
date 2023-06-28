@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func upcomingHelltidesHandler(s *discordgo.Session, i *discordgo.InteractionCreate, guild models.GuildModel, loc *time.Location) {
+func upcomingHelltidesHandler(s *discordgo.Session, i *discordgo.InteractionCreate, loc *time.Location) {
 	helltides, err := redisCache.GetUpcomingHelltides()
 	if err != nil {
 		log.Println(err)
@@ -50,7 +50,7 @@ func upcomingHelltideCommandHandler(s *discordgo.Session, i *discordgo.Interacti
 
 	if _, ok := optionMap["list"]; ok {
 		if optionMap["list"].BoolValue() {
-			upcomingHelltidesHandler(s, i, guild, loc)
+			upcomingHelltidesHandler(s, i, loc)
 			return
 		}
 	}
