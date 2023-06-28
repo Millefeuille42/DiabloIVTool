@@ -68,14 +68,8 @@ func helpCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	message += "\n" + generateWtsString() + "\n" + generateClassesString()
 	message = fmt.Sprintf("```%s```", message)
 
-	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: message,
-			Flags:   discordgo.MessageFlagsEphemeral,
-		},
-	})
-	if err != nil {
-		log.Println(err)
-	}
+	interactionSendResponse(s, i,
+		message,
+		discordgo.MessageFlagsEphemeral,
+	)
 }

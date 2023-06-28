@@ -10,18 +10,26 @@ var DiscordCommands = []*discordgo.ApplicationCommand{
 	{
 		Name:        "boss",
 		Description: "Get upcoming world boss",
-	},
-	{
-		Name:        "bosses",
-		Description: "Get list of upcoming world bosses",
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Type:        discordgo.ApplicationCommandOptionBoolean,
+				Name:        "list",
+				Description: "List all upcoming world bosses",
+				Required:    false,
+			},
+		},
 	},
 	{
 		Name:        "helltide",
 		Description: "Get upcoming helltide",
-	},
-	{
-		Name:        "helltides",
-		Description: "Get list of upcoming helltides",
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Type:        discordgo.ApplicationCommandOptionBoolean,
+				Name:        "list",
+				Description: "List all upcoming helltides",
+				Required:    false,
+			},
+		},
 	},
 	{
 		Name:        "channel",

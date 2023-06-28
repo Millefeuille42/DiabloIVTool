@@ -39,14 +39,8 @@ func timezoneCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate
 		return
 	}
 
-	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("Location set to %s", optionMap["timezone"].StringValue()),
-			Flags:   discordgo.MessageFlagsEphemeral,
-		},
-	})
-	if err != nil {
-		log.Println(err)
-	}
+	interactionSendResponse(s, i,
+		fmt.Sprintf("Location set to %s", optionMap["timezone"].StringValue()),
+		discordgo.MessageFlagsEphemeral,
+	)
 }

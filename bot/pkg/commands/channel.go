@@ -55,14 +55,8 @@ func channelCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 		return
 	}
 
-	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("Channel <#%s> registered for %s alerts", channelOption.ID, typeOption),
-			Flags:   discordgo.MessageFlagsEphemeral,
-		},
-	})
-	if err != nil {
-		log.Println(err)
-	}
+	interactionSendResponse(s, i,
+		fmt.Sprintf("Channel <#%s> registered for %s alerts", channelOption.ID, typeOption),
+		discordgo.MessageFlagsEphemeral,
+	)
 }
