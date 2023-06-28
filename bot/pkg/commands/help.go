@@ -33,23 +33,6 @@ func generateSpansString(guild models.GuildModel) (string, error) {
 	return message, nil
 }
 
-func generateWtsString() string {
-	return "World Tiers:\n" +
-		"adventurer: 1\n" +
-		"veteran:    2\n" +
-		"nightmare:  3\n" +
-		"torment:    4\n"
-}
-
-func generateClassesString() string {
-	return "Classes:\n" +
-		"1. barbarian\n" +
-		"2. rogue\n" +
-		"3. sorcerer\n" +
-		"4. druid\n" +
-		"5. necromancer\n"
-}
-
 func helpCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	guild := models.GuildModel{}
 	_, err := guild.GetGuildByGuildId(i.GuildID)
@@ -65,7 +48,6 @@ func helpCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		interactionSendError(s, i, "Error generating help (wrong timezone)", 0)
 		return
 	}
-	message += "\n" + generateWtsString() + "\n" + generateClassesString()
 	message = fmt.Sprintf("```%s```", message)
 
 	interactionSendResponse(s, i,

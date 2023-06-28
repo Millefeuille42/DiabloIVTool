@@ -327,14 +327,15 @@ func alertButtonComponentHandler(s *discordgo.Session, i *discordgo.InteractionC
 	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Flags: discordgo.MessageFlagsEphemeral,
+			Flags:   discordgo.MessageFlagsEphemeral,
+			Content: "Select the world boss spawns you want te be alerted for (for details use the /help command)",
 			Components: []discordgo.MessageComponent{
 				discordgo.ActionsRow{
 					Components: []discordgo.MessageComponent{
 						discordgo.SelectMenu{
 							MenuType:    discordgo.StringSelectMenu,
 							CustomID:    "alert_select",
-							Placeholder: "Select your alert(s)",
+							Placeholder: "Select your timespan(s)",
 							MinValues:   &onePointer,
 							MaxValues:   4,
 							Options: []discordgo.SelectMenuOption{
