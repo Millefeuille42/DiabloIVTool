@@ -40,6 +40,24 @@ var DiscordCommands = []*discordgo.ApplicationCommand{
 				Name:        "span",
 				Description: "Time span to register to (/help to see available options)",
 				Required:    true,
+				Choices: []*discordgo.ApplicationCommandOptionChoice{
+					{
+						Name:  "Morning",
+						Value: "morning",
+					},
+					{
+						Name:  "Day",
+						Value: "day",
+					},
+					{
+						Name:  "Afternoon",
+						Value: "afternoon",
+					},
+					{
+						Name:  "Evening",
+						Value: "evening",
+					},
+				},
 			},
 		},
 	},
@@ -52,6 +70,28 @@ var DiscordCommands = []*discordgo.ApplicationCommand{
 				Name:        "class",
 				Description: "Class to set (/help to see available options)",
 				Required:    true,
+				Choices: []*discordgo.ApplicationCommandOptionChoice{
+					{
+						Name:  "Barbarian",
+						Value: "barbarian",
+					},
+					{
+						Name:  "Sorcerer",
+						Value: "sorcerer",
+					},
+					{
+						Name:  "Rogue",
+						Value: "rogue",
+					},
+					{
+						Name:  "Druid",
+						Value: "druid",
+					},
+					{
+						Name:  "Necromancer",
+						Value: "necromancer",
+					},
+				},
 			},
 		},
 	},
@@ -64,6 +104,24 @@ var DiscordCommands = []*discordgo.ApplicationCommand{
 				Name:        "wt",
 				Description: "world tier to set (/help to see available options)",
 				Required:    true,
+				Choices: []*discordgo.ApplicationCommandOptionChoice{
+					{
+						Name:  "World Tier 1",
+						Value: "1",
+					},
+					{
+						Name:  "World Tier 2",
+						Value: "2",
+					},
+					{
+						Name:  "World Tier 3",
+						Value: "3",
+					},
+					{
+						Name:  "World Tier 4",
+						Value: "4",
+					},
+				},
 			},
 		},
 	},
