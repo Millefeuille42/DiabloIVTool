@@ -28,7 +28,9 @@ func GuildJoined(s *discordgo.Session, g *discordgo.GuildCreate) {
 			}
 
 			if (permissions & discordgo.PermissionSendMessages) != 0 {
-				guild.Channel = channel.ID
+				guild.BossChannel = channel.ID
+				guild.HelltideChannel = channel.ID
+				guild.LegionChannel = channel.ID
 				break
 			}
 		}

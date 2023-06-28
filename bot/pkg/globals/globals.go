@@ -26,6 +26,29 @@ var DiscordCommands = []*discordgo.ApplicationCommand{
 	{
 		Name:        "channel",
 		Description: "Set channel for bot to post in",
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Type:        discordgo.ApplicationCommandOptionString,
+				Name:        "type",
+				Description: "Type of alerts to set (/help to see available options)",
+				Required:    true,
+				Choices: []*discordgo.ApplicationCommandOptionChoice{
+					{
+						Name:  "World Boss",
+						Value: "boss",
+					},
+				},
+			},
+			{
+				Type:        discordgo.ApplicationCommandOptionChannel,
+				Name:        "channel",
+				Description: "Channel to send the alerts in",
+				Required:    true,
+				ChannelTypes: []discordgo.ChannelType{
+					discordgo.ChannelTypeGuildText,
+				},
+			},
+		},
 	},
 	{
 		Name:        "help",

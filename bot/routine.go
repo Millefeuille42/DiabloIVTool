@@ -108,7 +108,7 @@ func sendAlert(worldBoss redisCache.WorldBossData, s *discordgo.Session, emote s
 			zone,
 			date)
 
-		_, err = s.ChannelMessageSend(guild.Channel, message)
+		_, err = s.ChannelMessageSend(guild.BossChannel, message)
 		if err != nil {
 			log.Println(err)
 		}

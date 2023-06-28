@@ -8,11 +8,13 @@ import (
 )
 
 type GuildModel struct {
-	Id       string `json:"id"`
-	GuildId  string `json:"guild_id"`
-	Name     string `json:"name"`
-	Channel  string `json:"channel"`
-	Location string `json:"location"`
+	Id              string `json:"id"`
+	GuildId         string `json:"guild_id"`
+	Name            string `json:"name"`
+	BossChannel     string `json:"boss_channel"`
+	HelltideChannel string `json:"helltide_channel"`
+	LegionChannel   string `json:"legion_channel"`
+	Location        string `json:"location"`
 }
 
 func (guild *GuildModel) CreateTable() error {
@@ -21,7 +23,9 @@ func (guild *GuildModel) CreateTable() error {
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			guild_id TEXT NOT NULL UNIQUE,
 			name TEXT NOT NULL,
-			channel TEXT,
+			boss_channel TEXT,
+			helltide_channel TEXT,
+			legion_channel TEXT,
 			location TEXT
 		);
 	`)
@@ -38,7 +42,9 @@ func appendGuildsToList(list []GuildModel, rows *sql.Rows) ([]GuildModel, error)
 		&guild.Id,
 		&guild.GuildId,
 		&guild.Name,
-		&guild.Channel,
+		&guild.BossChannel,
+		&guild.HelltideChannel,
+		&guild.LegionChannel,
 		&guild.Location,
 	)
 	if err != nil {
@@ -76,7 +82,9 @@ func (guild *GuildModel) getGuildByQuery(query squirrel.SelectBuilder) error {
 		&guild.Id,
 		&guild.GuildId,
 		&guild.Name,
-		&guild.Channel,
+		&guild.BossChannel,
+		&guild.HelltideChannel,
+		&guild.LegionChannel,
 		&guild.Location,
 	)
 	if err != nil {
@@ -124,13 +132,17 @@ func (guild *GuildModel) CreateGuild() error {
 		Columns(
 			"guild_id",
 			"name",
-			"channel",
+			"boss_channel",
+			"helltide_channel",
+			"legion_channel",
 			"location",
 		).
 		Values(
 			guild.GuildId,
 			guild.Name,
-			guild.Channel,
+			guild.BossChannel,
+			guild.HelltideChannel,
+			guild.LegionChannel,
 			guild.Location,
 		).
 		RunWith(database.Database).Exec()
@@ -164,8 +176,16 @@ func (guild *GuildModel) UpdateGuild() error {
 		guildQuery = guildQuery.Set("name", guild.Name)
 	}
 
-	if guild.Channel != "" {
-		guildQuery = guildQuery.Set("channel", guild.Channel)
+	if guild.BossChannel != "" {
+		guildQuery = guildQuery.Set("boss_channel", guild.BossChannel)
+	}
+
+	if guild.HelltideChannel != "" {
+		guildQuery = guildQuery.Set("helltide_channel", guild.HelltideChannel)
+	}
+
+	if guild.LegionChannel != "" {
+		guildQuery = guildQuery.Set("legion_channel", guild.LegionChannel)
 	}
 
 	if guild.Location != "" {
