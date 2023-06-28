@@ -36,6 +36,8 @@ func main() {
 		log.Fatal("main: dial:", err)
 	}
 
+	signal.Notify(ws.Interrupt, os.Interrupt)
+
 	defer ws.Close()
 	go ws.Listener()
 	go ws.Sender()
@@ -50,7 +52,7 @@ func main() {
 			alive = false
 		case <-ws.Exited:
 			log.Println("main: wsFetcher exited")
-			return
+			alive = false
 		case <-ws.Connected:
 			log.Println("main: connected, asking for data")
 			askForData(ws)

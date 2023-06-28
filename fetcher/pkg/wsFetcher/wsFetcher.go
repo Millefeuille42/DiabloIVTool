@@ -2,6 +2,7 @@ package wsFetcher
 
 import (
 	"github.com/gorilla/websocket"
+	"os"
 )
 
 type WsClient struct {
@@ -10,7 +11,7 @@ type WsClient struct {
 	Send      chan string
 	Connected chan struct{}
 	Exited    chan struct{}
-	Interrupt chan struct{}
+	Interrupt chan os.Signal
 }
 
 func New() *WsClient {
@@ -19,6 +20,6 @@ func New() *WsClient {
 		Send:      make(chan string),
 		Connected: make(chan struct{}),
 		Exited:    make(chan struct{}),
-		Interrupt: make(chan struct{}),
+		Interrupt: make(chan os.Signal),
 	}
 }
