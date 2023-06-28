@@ -5,8 +5,6 @@ services:
     ports:
       - ${DBIVTOOL_REDIS_PORT:-6379}:6379
   bot:
-    depends_on:
-     - redis
     build:
       context: ./
       dockerfile: bot.Dockerfile
@@ -23,8 +21,6 @@ services:
     volumes:
       - ${DBIVTOOL_VOLUME_PATH_HOST}:${DBIVTOOL_VOLUME_PATH_CONTAINER}
   fetcher:
-    depends_on:
-      - redis
     build:
         context: ./
         dockerfile: fetcher.Dockerfile
