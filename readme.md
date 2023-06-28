@@ -81,7 +81,7 @@ To run this bot locally, you will need to add the following environment variable
 
 `DBIVTOOL_DB_DSN`: The database DSN (`file:./db.sqlite3?_foreign_keys=ON`)
 
-`DBIVTOOL_REDIS_HOST`: The redis host (`localhost`)
+`DBIVTOOL_REDIS_HOST`: The redis host (`localhost`), if using the provided redis server, this variable should be set to `redis`
 
 `DBIVTOOL_REDIS_PORT`: The redis port (`6379`)
 
@@ -101,6 +101,12 @@ To deploy this project run
 docker-compose up -d
 ```
 
+To deploy this project with a custom redis server, run
+
+```bash
+docker-compose up -d bot fetcher
+```
+
 ## Feedback
 
 If you have any feedback, please create an issue on this repository.
@@ -109,7 +115,7 @@ If you have any feedback, please create an issue on this repository.
 
 By [@millefeuille](https://www.github.com/Millefeuille42)
 
-This bot works on the following APIs:  
+This bot works using the APIs of the following websites:  
 - https://d4builds.gg/ 
 - https://worldstone.io/
 - https://helltides.com/
