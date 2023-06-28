@@ -3,6 +3,7 @@ package commands
 import (
 	"github.com/bwmarrin/discordgo"
 	"log"
+	"strings"
 )
 
 var commandMap = make(map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate))
@@ -18,6 +19,8 @@ func PopulateCommandMap() {
 	commandMap["unique"] = uniqueCommandHandler
 
 	commandMap["roles"] = rolesCommandHandler
+
+	componentMap["channel_select"] = channelSelectComponentHandler
 
 	componentMap["class_select"] = classSelectComponentHandler
 	componentMap["world_tier_select"] = worldTierSelectComponentHandler
@@ -36,7 +39,8 @@ func CommandManager(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 	if i.Type == discordgo.InteractionMessageComponent {
 		log.Printf("Received component: %v", i.MessageComponentData().CustomID)
-		if handler, ok := componentMap[i.MessageComponentData().CustomID]; ok {
+		id := strings.Split(i.MessageComponentData().CustomID, "-")[0]
+		if handler, ok := componentMap[id]; ok {
 			handler(s, i)
 		}
 		return

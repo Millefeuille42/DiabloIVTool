@@ -47,15 +47,6 @@ var DiscordCommands = []*discordgo.ApplicationCommand{
 					},
 				},
 			},
-			{
-				Type:        discordgo.ApplicationCommandOptionChannel,
-				Name:        "channel",
-				Description: "Channel to send the alerts in",
-				Required:    true,
-				ChannelTypes: []discordgo.ChannelType{
-					discordgo.ChannelTypeGuildText,
-				},
-			},
 		},
 	},
 	{

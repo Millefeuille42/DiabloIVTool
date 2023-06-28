@@ -62,6 +62,7 @@ func classSelectComponentHandler(s *discordgo.Session, i *discordgo.InteractionC
 
 	if len(values) == 0 {
 		interactionSendError(s, i, "No class selected", discordgo.MessageFlagsEphemeral)
+		return
 	}
 
 	if i.Member == nil {
@@ -110,6 +111,7 @@ func worldTierSelectComponentHandler(s *discordgo.Session, i *discordgo.Interact
 
 	if len(values) == 0 {
 		interactionSendError(s, i, "No class selected", discordgo.MessageFlagsEphemeral)
+		return
 	}
 
 	if i.Member == nil {
@@ -155,6 +157,7 @@ func alertSelectComponentHandler(s *discordgo.Session, i *discordgo.InteractionC
 
 	if len(values) == 0 {
 		interactionSendError(s, i, "No class selected", discordgo.MessageFlagsEphemeral)
+		return
 	}
 
 	if i.Member == nil {

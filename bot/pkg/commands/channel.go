@@ -8,18 +8,19 @@ import (
 	"strings"
 )
 
-func channelCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	optionMap := parseOptions(i.ApplicationCommandData().Options)
-
-	if _, ok := optionMap["type"]; !ok {
-		interactionSendError(s, i, "No alert type provided", discordgo.MessageFlagsEphemeral)
+func channelSelectComponentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	values := i.MessageComponentData().Values
+	if len(values) == 0 {
+		interactionSendError(s, i, "No channel selected", discordgo.MessageFlagsEphemeral)
 		return
 	}
 
-	if _, ok := optionMap["channel"]; !ok {
-		interactionSendError(s, i, "No channel provided", discordgo.MessageFlagsEphemeral)
+	channelTypeArray := strings.Split(i.MessageComponentData().CustomID, "-")
+	if len(channelTypeArray) < 2 {
+		interactionSendError(s, i, "Error registering channel", 0)
 		return
 	}
+	channelType := channelTypeArray[1]
 
 	guild := models.GuildModel{}
 	_, err := guild.GetGuildByGuildId(i.GuildID)
@@ -29,22 +30,15 @@ func channelCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 		return
 	}
 
-	channelOption := optionMap["channel"].ChannelValue(s)
-	if channelOption.Type != discordgo.ChannelTypeGuildText {
-		interactionSendError(s, i, "Invalid channel provided", discordgo.MessageFlagsEphemeral)
-		return
-	}
-
-	typeOption := strings.ToLower(optionMap["type"].StringValue())
-	switch typeOption {
+	switch channelType {
 	case "boss":
-		guild.BossChannel = channelOption.ID
+		guild.BossChannel = values[0]
 		break
 	case "helltide":
-		guild.HelltideChannel = channelOption.ID
+		guild.HelltideChannel = values[0]
 		break
 	case "legion":
-		guild.LegionChannel = channelOption.ID
+		guild.LegionChannel = values[0]
 		break
 	}
 
@@ -55,8 +49,53 @@ func channelCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 		return
 	}
 
-	interactionSendResponse(s, i,
-		fmt.Sprintf("Channel <#%s> registered for %s alerts", channelOption.ID, typeOption),
-		discordgo.MessageFlagsEphemeral,
-	)
+	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Content: fmt.Sprintf("Channel <#%s> registered for %s alerts", values[0], channelType),
+			Flags:   discordgo.MessageFlagsEphemeral,
+		},
+	})
+	if err != nil {
+		log.Println(err)
+	}
+
+}
+
+func channelCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	optionMap := parseOptions(i.ApplicationCommandData().Options)
+
+	if _, ok := optionMap["type"]; !ok {
+		interactionSendError(s, i, "No alert type provided", discordgo.MessageFlagsEphemeral)
+		return
+	}
+
+	onePointer := 1
+
+	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Flags: discordgo.MessageFlagsEphemeral,
+			Components: []discordgo.MessageComponent{
+				discordgo.ActionsRow{
+					Components: []discordgo.MessageComponent{
+						discordgo.SelectMenu{
+							MenuType:    discordgo.ChannelSelectMenu,
+							CustomID:    "channel_select-" + optionMap["type"].StringValue(),
+							Placeholder: "Select a channel",
+							MinValues:   &onePointer,
+							MaxValues:   1,
+							ChannelTypes: []discordgo.ChannelType{
+								discordgo.ChannelTypeGuildText,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if err != nil {
+		log.Println(err)
+	}
 }
