@@ -7,6 +7,23 @@ import (
 	"log"
 )
 
+func interactionSendResponse(s *discordgo.Session, i *discordgo.InteractionCreate, message string, flags discordgo.MessageFlags) {
+	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Content: message,
+			Flags:   flags,
+		},
+	})
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func interactionSendError(s *discordgo.Session, i *discordgo.InteractionCreate, message string, flags discordgo.MessageFlags) {
+	interactionSendResponse(s, i, message, flags)
+}
+
 func parseOptions(options []*discordgo.ApplicationCommandInteractionDataOption) map[string]*discordgo.ApplicationCommandInteractionDataOption {
 	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
 	for _, opt := range options {
@@ -24,16 +41,10 @@ func handleRoleRemove(s *discordgo.Session, i *discordgo.InteractionCreate, role
 		return
 	}
 
-	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("You have been de-assigned the %s role", roleName),
-			Flags:   discordgo.MessageFlagsEphemeral,
-		},
-	})
-	if err != nil {
-		log.Println(err)
-	}
+	interactionSendResponse(s, i,
+		fmt.Sprintf("You have been de-assigned the %s role", roleName),
+		discordgo.MessageFlagsEphemeral,
+	)
 }
 
 func handleRoleAdd(s *discordgo.Session, i *discordgo.InteractionCreate, roleName string) {
@@ -44,14 +55,8 @@ func handleRoleAdd(s *discordgo.Session, i *discordgo.InteractionCreate, roleNam
 		return
 	}
 
-	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("You have been assigned the %s role", roleName),
-			Flags:   discordgo.MessageFlagsEphemeral,
-		},
-	})
-	if err != nil {
-		log.Println(err)
-	}
+	interactionSendResponse(s, i,
+		fmt.Sprintf("You have been assigned the %s role", roleName),
+		discordgo.MessageFlagsEphemeral,
+	)
 }
