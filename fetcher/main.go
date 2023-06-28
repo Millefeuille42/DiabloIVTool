@@ -48,7 +48,6 @@ func main() {
 		case <-interrupt:
 			log.Println("main: interrupt")
 			alive = false
-			ws.Interrupt <- struct{}{}
 		case <-ws.Exited:
 			log.Println("main: wsFetcher exited")
 			return
