@@ -48,8 +48,8 @@ func upcomingHelltideCommandHandler(s *discordgo.Session, i *discordgo.Interacti
 		return
 	}
 
-	if _, ok := optionMap["list"]; ok {
-		if optionMap["list"].BoolValue() {
+	if _, ok := optionMap["format"]; ok {
+		if optionMap["format"].StringValue() == "list" {
 			upcomingHelltidesHandler(s, i, loc)
 			return
 		}

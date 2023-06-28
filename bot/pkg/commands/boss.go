@@ -57,8 +57,8 @@ func upcomingBossCommandHandler(s *discordgo.Session, i *discordgo.InteractionCr
 		return
 	}
 
-	if _, ok := optionMap["list"]; ok {
-		if optionMap["list"].BoolValue() {
+	if _, ok := optionMap["format"]; ok {
+		if optionMap["format"].StringValue() == "list" {
 			upcomingBossesHandler(s, i, loc)
 			return
 		}
