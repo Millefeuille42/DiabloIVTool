@@ -164,6 +164,7 @@ func UnsetAllRoles(guildId, userId string, s *discordgo.Session) error {
 		if err != nil {
 			return err
 		}
+		time.Sleep(200 * time.Millisecond)
 	}
 
 	return nil

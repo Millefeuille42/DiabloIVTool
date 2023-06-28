@@ -2,7 +2,6 @@ package commands
 
 import (
 	"bot/pkg/discord"
-	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
 )
@@ -34,24 +33,20 @@ func parseOptions(options []*discordgo.ApplicationCommandInteractionDataOption) 
 }
 
 func handleRoleRemove(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	interactionSendResponse(s, i, "Roles are being de-assigned", discordgo.MessageFlagsEphemeral)
+
 	err := discord.UnsetAllRoles(i.GuildID, i.Member.User.ID, s)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error de-assigning roles", 0)
 		return
 	}
-
-	interactionSendResponse(s, i,
-		fmt.Sprintf("You have been de-assigned your roles"),
-		discordgo.MessageFlagsEphemeral,
-	)
 }
 
 func handleRoleAdd(s *discordgo.Session, i *discordgo.InteractionCreate, roleName string) {
 	err := discord.SetRole(roleName, i.GuildID, i.Member.User.ID, s)
 	if err != nil {
 		log.Println(err)
-		interactionSendError(s, i, "Error assigning role", 0)
+		interactionSendError(s, i, "Error assigning role", discordgo.MessageFlagsEphemeral)
 		return
 	}
 }
