@@ -1,10 +1,7 @@
 package commands
 
 import (
-	"bot/pkg/discord"
-	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"log"
 	"strings"
 )
 
@@ -15,12 +12,12 @@ func alertCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		optionMap[opt.Name] = opt
 	}
 
-	if _, ok := optionMap["span"]; !ok || optionMap["span"].StringValue() == "" {
+	if _, ok := optionMap["span"]; !ok {
 		interactionSendError(s, i, "No timespan provided", discordgo.MessageFlagsEphemeral)
 		return
 	}
-
 	optionSpan := strings.ToLower(optionMap["span"].StringValue())
+
 	roleName := ""
 	switch optionSpan {
 	case "morning":
@@ -43,21 +40,14 @@ func alertCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
-	err := discord.SetRole(roleName, i.GuildID, i.Member.User.ID, s)
-	if err != nil {
-		log.Println(err)
-		interactionSendError(s, i, "Error assigning role", 0)
-		return
+	optionRemove := false
+	if _, ok := optionMap["remove"]; ok {
+		optionRemove = optionMap["remove"].BoolValue()
 	}
 
-	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("You have been assigned the %s role", roleName),
-			Flags:   discordgo.MessageFlagsEphemeral,
-		},
-	})
-	if err != nil {
-		log.Println(err)
+	if optionRemove {
+		handleRoleRemove(s, i, roleName)
+	} else {
+		handleRoleAdd(s, i, roleName)
 	}
 }

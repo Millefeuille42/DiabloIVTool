@@ -59,6 +59,12 @@ var DiscordCommands = []*discordgo.ApplicationCommand{
 					},
 				},
 			},
+			{
+				Type:        discordgo.ApplicationCommandOptionBoolean,
+				Name:        "remove",
+				Description: "remove role",
+				Required:    false,
+			},
 		},
 	},
 	{
@@ -93,6 +99,12 @@ var DiscordCommands = []*discordgo.ApplicationCommand{
 					},
 				},
 			},
+			{
+				Type:        discordgo.ApplicationCommandOptionBoolean,
+				Name:        "remove",
+				Description: "remove role",
+				Required:    false,
+			},
 		},
 	},
 	{
@@ -122,6 +134,12 @@ var DiscordCommands = []*discordgo.ApplicationCommand{
 						Value: "4",
 					},
 				},
+			},
+			{
+				Type:        discordgo.ApplicationCommandOptionBoolean,
+				Name:        "remove",
+				Description: "remove role",
+				Required:    false,
 			},
 		},
 	},
