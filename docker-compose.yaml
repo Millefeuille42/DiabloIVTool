@@ -1,13 +1,19 @@
 version: "3"
 services:
   redis:
-    image: redis:7-alpine
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+      args:
+        - DBIVTOOL_REDIS_PASSWORD=${DBIVTOOL_REDIS_PASSWORD}
+    image: diablo_iv_tool_redis
+    restart: always
     ports:
       - ${DBIVTOOL_REDIS_PORT:-6379}:6379
   bot:
     build:
-      context: ./
-      dockerfile: bot.Dockerfile
+      context: ./bot
+      dockerfile: Dockerfile
     image: diablo_iv_tool_bot
     restart: always
     environment:
@@ -15,21 +21,19 @@ services:
       - DBIVTOOL_DB_DRIVER=${DBIVTOOL_DB_DRIVER}
       - DBIVTOOL_DB_DSN=${DBIVTOOL_DB_DSN}
       - DBIVTOOL_REDIS_HOST=${DBIVTOOL_REDIS_HOST}
-      - DBIVTOOL_REDIS_PORT=${DBIVTOOL_REDIS_PORT}
+      - DBIVTOOL_REDIS_PORT=${DBIVTOOL_REDIS_PORT:-6379}
       - DBIVTOOL_REDIS_PASSWORD=${DBIVTOOL_REDIS_PASSWORD}
       - DBIVTOOL_REDIS_DB=${DBIVTOOL_REDIS_DB}
     volumes:
       - ${DBIVTOOL_VOLUME_PATH_HOST}:${DBIVTOOL_VOLUME_PATH_CONTAINER}
   fetcher:
     build:
-        context: ./
-        dockerfile: fetcher.Dockerfile
+        context: ./fetcher
+        dockerfile: Dockerfile
     image: diablo_iv_tool_fetcher
     restart: always
     environment:
       - DBIVTOOL_REDIS_HOST=${DBIVTOOL_REDIS_HOST}
-      - DBIVTOOL_REDIS_PORT=${DBIVTOOL_REDIS_PORT}
+      - DBIVTOOL_REDIS_PORT=${DBIVTOOL_REDIS_PORT:-6379}
       - DBIVTOOL_REDIS_PASSWORD=${DBIVTOOL_REDIS_PASSWORD}
       - DBIVTOOL_REDIS_DB=${DBIVTOOL_REDIS_DB}
-
-

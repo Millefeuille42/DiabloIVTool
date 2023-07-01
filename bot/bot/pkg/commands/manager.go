@@ -20,6 +20,8 @@ func PopulateCommandMap() {
 
 	commandMap["roles"] = rolesCommandHandler
 
+	commandMap["help"] = helpCommandHandler
+
 	componentMap["channel_select"] = channelSelectComponentHandler
 
 	componentMap["class_select"] = classSelectComponentHandler
