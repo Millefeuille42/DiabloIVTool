@@ -13,8 +13,8 @@ import (
 )
 
 func askForData(ws *wsFetcher.WsClient) {
-	wsFetcher.AskForData(ws.Send)
 	fetchers.AskForData()
+	wsFetcher.AskForData(ws.Send)
 }
 
 func main() {
@@ -23,11 +23,17 @@ func main() {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 
+	redisCache.Context = redisCache.NewContext()
+
 	redisCache.Client = redisCache.New(&redis.Options{
-		Addr:     globals.RedisHost + ":" + globals.RedisPort,
-		Password: globals.RedisPassword,
-		DB:       globals.RedisDB,
+		Addr:         globals.RedisHost + ":" + globals.RedisPort,
+		Password:     globals.RedisPassword,
+		DB:           globals.RedisDB,
+		ClientName:   "dbivtool-fetcher",
+		MaxIdleConns: 5,
 	})
+
+	defer redisCache.Client.Close()
 
 	ws := wsFetcher.New()
 	resp, err := ws.Connect()

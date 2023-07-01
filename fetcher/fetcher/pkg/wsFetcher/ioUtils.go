@@ -1,7 +1,6 @@
 package wsFetcher
 
 import (
-	"context"
 	"encoding/json"
 	"fetcher/pkg/redisCache"
 	"github.com/redis/go-redis/v9"
@@ -64,8 +63,7 @@ func (client *WsClient) parseMessageData(message socketData, redisClient *redis.
 		return nil
 	}
 
-	ctx := context.Background()
-	err = redisClient.Set(ctx, message.Data.Body.Title, dataJson, time.Minute*30).Err()
+	err = redisClient.Set(redisCache.Context, message.Data.Body.Title, dataJson, time.Minute*30).Err()
 	if err != nil {
 		return err
 	}

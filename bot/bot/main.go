@@ -55,11 +55,17 @@ func main() {
 
 	globals.SetGlobals()
 
+	redisCache.Context = redisCache.NewContext()
+
 	redisCache.Client = redisCache.New(&redis.Options{
-		Addr:     globals.RedisHost + ":" + globals.RedisPort,
-		Password: globals.RedisPassword,
-		DB:       globals.RedisDB,
+		Addr:         globals.RedisHost + ":" + globals.RedisPort,
+		Password:     globals.RedisPassword,
+		DB:           globals.RedisDB,
+		ClientName:   "dbivtool-bot",
+		MaxIdleConns: 5,
 	})
+
+	defer redisCache.Client.Close()
 
 	database.Database, err = database.NewDatabase(globals.DatabaseDriver, globals.DatabaseDSN)
 	if err != nil {

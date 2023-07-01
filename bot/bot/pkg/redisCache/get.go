@@ -1,13 +1,11 @@
 package redisCache
 
 import (
-	"context"
 	"encoding/json"
 )
 
 func GetUpcomingHelltides() (UpcomingHelltidesData, error) {
-	ctx := context.Background()
-	data, err := Client.Get(ctx, "helltides").Bytes()
+	data, err := Client.Get(Context, "helltides").Bytes()
 	if err != nil {
 		return UpcomingHelltidesData{}, err
 	}
@@ -22,8 +20,7 @@ func GetUpcomingHelltides() (UpcomingHelltidesData, error) {
 }
 
 func GetUpcomingBosses() (UpcomingBossesData, error) {
-	ctx := context.Background()
-	data, err := Client.Get(ctx, "world_bosses").Bytes()
+	data, err := Client.Get(Context, "world_bosses").Bytes()
 	if err != nil {
 		return UpcomingBossesData{}, err
 	}
@@ -38,8 +35,7 @@ func GetUpcomingBosses() (UpcomingBossesData, error) {
 }
 
 func GetHelltide() (HelltideData, error) {
-	ctx := context.Background()
-	data, err := Client.Get(ctx, "helltide").Bytes()
+	data, err := Client.Get(Context, "helltide").Bytes()
 	if err != nil {
 		return HelltideData{}, err
 	}
@@ -54,8 +50,7 @@ func GetHelltide() (HelltideData, error) {
 }
 
 func GetWorldBoss() (WorldBossData, error) {
-	ctx := context.Background()
-	data, err := Client.Get(ctx, "world_boss").Bytes()
+	data, err := Client.Get(Context, "world_boss").Bytes()
 	if err != nil {
 		return WorldBossData{}, err
 	}
@@ -70,8 +65,7 @@ func GetWorldBoss() (WorldBossData, error) {
 }
 
 func GetWorldBossZone() (string, error) {
-	ctx := context.Background()
-	data, err := Client.Get(ctx, "world_boss_zone").Bytes()
+	data, err := Client.Get(Context, "world_boss_zone").Bytes()
 	if err != nil {
 		return "", err
 	}
@@ -86,8 +80,7 @@ func GetWorldBossZone() (string, error) {
 }
 
 func GetUniqueItems() (UniqueItemsData, error) {
-	ctx := context.Background()
-	data, err := Client.Get(ctx, "unique_items").Bytes()
+	data, err := Client.Get(Context, "unique_items").Bytes()
 	if err != nil {
 		return UniqueItemsData{}, err
 	}
