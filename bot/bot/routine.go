@@ -11,16 +11,29 @@ import (
 	"time"
 )
 
-func setBotStatus(worldBoss redisCache.WorldBossData, zone string) {
+func setBotStatus(worldBoss redisCache.WorldBossData) {
 	if worldBoss.Boss == "Wandering Death" {
 		worldBoss.Boss = "Death"
+	}
+
+	zone, err := redisCache.GetWorldBossZone()
+	if err != nil {
+		if err.Error() != "redis: nil" {
+			log.Println(err)
+		}
+	}
+
+	if zone == "no-boss" || zone == "" {
+		zone = ""
+	} else {
+		zone = fmt.Sprintf(" at %s", zone)
 	}
 
 	untilBoss := time.Until(worldBoss.StartTime)
 	hours := int(untilBoss.Hours())
 	minutes := int(untilBoss.Minutes()) - (hours * 60)
 
-	err := globals.Bot.UpdateWatchStatus(0, fmt.Sprintf("%s in %dh%02dm%s",
+	err = globals.Bot.UpdateWatchStatus(0, fmt.Sprintf("%s in %dh%02dm%s",
 		worldBoss.Boss,
 		hours,
 		minutes,
@@ -79,12 +92,25 @@ func getGuildRole(guildId, span string) string {
 	return ""
 }
 
-func sendAlert(worldBoss redisCache.WorldBossData, s *discordgo.Session, emote string, zone string) {
+func sendAlert(worldBoss redisCache.WorldBossData, s *discordgo.Session, emote string) {
 	span := getSpan(worldBoss)
 	if span == "" {
 		return
 	}
 	log.Printf("Alerting guilds about %s for %s", worldBoss.Boss, span)
+
+	zone, err := redisCache.GetWorldBossZone()
+	if err != nil {
+		if err.Error() != "redis: nil" {
+			log.Println(err)
+		}
+	}
+
+	if zone == "no-boss" || zone == "" {
+		zone = ""
+	} else {
+		zone = fmt.Sprintf(" at %s", zone)
+	}
 
 	guilds, err := models.GetGuilds()
 	if err != nil {
@@ -115,8 +141,8 @@ func sendAlert(worldBoss redisCache.WorldBossData, s *discordgo.Session, emote s
 	}
 }
 
-func routineEvents(worldBoss redisCache.WorldBossData, zone string) {
-	setBotStatus(worldBoss, zone)
+func routineEvents(worldBoss redisCache.WorldBossData) {
+	setBotStatus(worldBoss)
 
 	untilBoss := time.Until(worldBoss.StartTime)
 
@@ -133,11 +159,11 @@ func routineEvents(worldBoss redisCache.WorldBossData, zone string) {
 	for refresh := false; !refresh; {
 		select {
 		case <-updateBotStatusTicker.C:
-			setBotStatus(worldBoss, zone)
+			setBotStatus(worldBoss)
 		case <-hourBefore.C:
-			sendAlert(worldBoss, globals.Bot, ":warning:", zone)
+			sendAlert(worldBoss, globals.Bot, ":warning:")
 		case <-tenMinutesBefore.C:
-			sendAlert(worldBoss, globals.Bot, ":sos:", zone)
+			sendAlert(worldBoss, globals.Bot, ":sos:")
 		case <-refreshTimer.C:
 			refresh = true
 		}
@@ -153,19 +179,7 @@ func routine() {
 			}
 			continue
 		}
-		zone, err := redisCache.GetWorldBossZone()
-		if err != nil {
-			if err.Error() != "redis: nil" {
-				log.Println(err)
-			}
-		}
 
-		if zone == "no-boss" || zone == "" {
-			zone = ""
-		} else {
-			zone = fmt.Sprintf(" at %s", zone)
-		}
-
-		routineEvents(worldBoss, zone)
+		routineEvents(worldBoss)
 	}
 }
