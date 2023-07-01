@@ -8,8 +8,8 @@ services:
         - DBIVTOOL_REDIS_PASSWORD=${DBIVTOOL_REDIS_PASSWORD}
     image: diablo_iv_tool_redis
     restart: always
-    ports:
-      - ${DBIVTOOL_REDIS_PORT:-6379}:6379
+    expose :
+      - 6379
   bot:
     build:
       context: ./bot
